@@ -20,69 +20,70 @@ public class StudentControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private StudentDbUtil studentDbUtil;
-	
-	@Resource(name="jdbc/web_student_tracker")
+
+	@Resource(name = "jdbc/web_student_tracker")
 	private DataSource dataSource;
-	
+
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		
+
 		try {
 			studentDbUtil = new StudentDbUtil(dataSource);
-		}
-		catch (Exception exc) {
+		} catch (Exception exc) {
 			throw new ServletException(exc);
 		}
 	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		try {
-			
+
 			String theCommand = request.getParameter("command");
-			
+
 			if (theCommand == null) {
-				theCommand= "LIST";
+				theCommand = "LIST";
 			}
-			
+
 			switch (theCommand) {
 
-				case "LIST":
-					listStudents(request, response);
-					break;
-				
-				case "ADD":
-					addStudent(request, response);
-					break;
-				
-				default:
-					listStudents(request, response);
+			case "LIST":
+				listStudents(request, response);
+				break;
+
+			case "ADD":
+				addStudent(request, response);
+				break;
+
+			default:
+				listStudents(request, response);
 			}
-			
-			
+
 			listStudents(request, response);
 		} catch (Exception exc) {
 			throw new ServletException(exc);
-		}			
-		
+		}
+
 	}
 
 	private void addStudent(HttpServletRequest request, HttpServletResponse response) {
+
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
 		
+		Student newStudent = new Student(firstName, lastName, email);
 		
-		
+		studentDbUtil.addStudent(newStudent);
 	}
 
-	private void listStudents(HttpServletRequest request, HttpServletResponse response) 
-		throws Exception {
+	private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		List<Student> students = studentDbUtil.getStudents();
-		
-		// add students to the request
+
 		request.setAttribute("STUDENT_LIST", students);
-				
-		// send to JSP page (view)
+
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");
 		dispatcher.forward(request, response);
 	}
