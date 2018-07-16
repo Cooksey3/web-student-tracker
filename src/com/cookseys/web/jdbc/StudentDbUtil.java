@@ -1,6 +1,7 @@
 package com.cookseys.web.jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -75,7 +76,28 @@ public class StudentDbUtil {
 		}
 	}
 
-	public void addStudent(Student newStudent) {
+	public void addStudent(Student newStudent) throws Exception {
+		
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		
+		try {
+			myConn = dataSource.getConnection();
+			
+			String sql = "insert into student "
+					+ "(first_name, last_name, email) "
+					+ "values (?, ?, ?)";
+			
+			myStmt = myConn.prepareStatement(sql);
+			
+			myStmt.setString(1, newStudent.getFirstName());
+			myStmt.setString(2, newStudent.getLastName());
+			myStmt.setString(3, newStudent.getEmail());
+			
+			myStmt.execute();
+		} finally {
+			close(myConn, myStmt, null);
+		}
 		
 	}
 
