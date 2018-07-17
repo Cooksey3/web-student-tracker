@@ -35,8 +35,7 @@ public class StudentControllerServlet extends HttpServlet {
 		}
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 
@@ -55,6 +54,10 @@ public class StudentControllerServlet extends HttpServlet {
 			case "ADD":
 				addStudent(request, response);
 				break;
+				
+			case "LOAD":
+				loadStudent(request, response);
+				break;
 
 			default:
 				listStudents(request, response);
@@ -67,16 +70,30 @@ public class StudentControllerServlet extends HttpServlet {
 
 	}
 
+	private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		String theStudentId = request.getParameter("studentId");
+		
+		Student theStudent = studentDbUtil.getStudent(theStudentId);
+		
+		request.setAttribute("THE_STUDENT", theStudent);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
+		
+		dispatcher.forward(request, response);
+	
+	}
+
 	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String email = request.getParameter("email");
-		
+
 		Student newStudent = new Student(firstName, lastName, email);
-		
+
 		studentDbUtil.addStudent(newStudent);
-		
+
 		listStudents(request, response);
 	}
 
