@@ -128,12 +128,13 @@ public class StudentDbUtil {
 				String lastName = myRs.getString("last_name");
 				String email = myRs.getString("email");
 				
-				
-			}
-			
+				theStudent = new Student(studentId, firstName, lastName, email);
+			} else {
+				throw new Exception("Could not find student id: " + studentId);
+			}			
 			return theStudent;
 		} finally {
-			
+			close(myConn, myStmt, myRs);
 		}
 
 	}

@@ -36,7 +36,7 @@
 			<c:forEach var="tempStudent" items="${STUDENT_LIST}">
 				<c:url var="tempLink" value="StudentControllerServlet">
 					<c:param name="command" value="LOAD" />
-					<c:param name="studentId" value="$tempStudent.id}" />
+					<c:param name="studentId" value="${tempStudent.id}" />
 				</c:url>
 				
 				<tr>
